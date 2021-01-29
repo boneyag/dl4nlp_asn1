@@ -96,7 +96,7 @@ def prepare_data():
     Read training and testing data dirs. Vectorize sentences based on the vocabulary.
     """
 
-    vocab = pickle.load(open("../serialized/vocab.pkl", "rb"))
+    vocab = pickle.load(open("../serialized/vocab3.pkl", "rb"))
 
     # print(vocab["word2id"]["like"])
     # print(vocab["id2word"]["like"])
