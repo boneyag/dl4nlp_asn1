@@ -56,7 +56,7 @@ def prepare_vocabulary():
 
     # print(list(word2id.items())[:10])
     # print(list(id2word.items())[:10])
-    pickle.dump(vocab, open("../serialized/vocab.pkl", "wb"))
+    pickle.dump(vocab, open("../serialized/vocab3.pkl", "wb"))
 
     
 def preprocess_comment(comment):
@@ -68,11 +68,12 @@ def preprocess_comment(comment):
     Function returns a new string.
     """
 
-    soup = BeautifulSoup(comment, 'lxml')
-    text_only = soup.get_text()
+    # soup = BeautifulSoup(comment, 'lxml')
+    # text_only = soup.get_text()
 
-    tokens = [w for w in text_only.strip().lower().split() if w not in stop_words]
-     
+    # tokens = [w for w in text_only.strip().lower().split() if w not in stop_words]
+    tokens = [w for w in comment.strip().lower().split()]
+
     new_string = ""
     for w in tokens:
         new_string += w + " "
@@ -195,5 +196,5 @@ def prepare_data():
     # print(X_val.shape)
     # print(X_train.shape)
 
-    pickle.dump((X_train, y_train, X_val, y_val, X_test, y_test), open("../serialized/data.pkl", "wb"))
+    pickle.dump((X_train, y_train, X_val, y_val, X_test, y_test), open("../serialized/data3.pkl", "wb"))
 

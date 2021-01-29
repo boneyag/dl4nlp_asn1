@@ -31,13 +31,23 @@ def regression(X, w, b):
 
     return z
 
-def gradient(y_expected, y_train):
+def gradient(y_hat, y_target, X):
     """
     Calculate the gradient
+    dJ = 1/m(y_hat-y)*y_hat*(1-y_hat)
     """
-    grad = np.multiply((y_expected - y_train), y_expected)
-    grad = np.multiply(grad, (1 - y_expected))
-    # grad = np.sum(grad)/len(y_expected)
+
+    m = len(y_hat)
+
+    error = (y_hat - y_target)
+    temp2 = error * y_hat * (1 - y_hat)
+
+    dw = 1/m * np.dot(X, temp2.T)
+    db = 1/m * np.sum(temp2)
+
+    grad = {"dw":dw,
+            "db":db}
+
     return grad
 
 def get_accuracy(y_hat, y):
@@ -51,15 +61,15 @@ def training(X_train, y_train, X_val, y_val):
     """
     Training the logistic regression model with mini-batch gradient descent
     """
-    
+    [features, instances] = X_train.shape    
 
     # initialize the parameters
-    w = np.random.uniform(-0.5, 0.5, 2000)
+    w = np.random.uniform(-0.5, 0.5, features)
     b = random.uniform(-0.5, 0.5)
 
     alpha = 0.1 # fixed learning rate
 
-    [_, instances] = X_train.shape
+    
 
     error = list()
     training_accuracy = list()
@@ -78,41 +88,40 @@ def training(X_train, y_train, X_val, y_val):
             current_instance += 20
 
             y_expected = sigmoid(regression(X, w, b))
-            grad = gradient(y_expected, y)
+            grad = gradient(y_expected, y, X)
 
-            w = w - alpha * np.sum(np.dot(X, grad.T))/len(y)
-            b = b - alpha * np.sum(grad)/len(y)
+            w = w - alpha * grad["dw"]
+            b = b - alpha * grad["db"]
 
-        pred = sigmoid(regression(X_train, w, b))
-        pred_c = (pred > 0.5).astype(int)
+        pred_t = sigmoid(regression(X_train, w, b))
+        pred_ct = (pred_t > 0.5).astype(int)
 
-        training_accuracy.append(get_accuracy(pred_c, y_train))
+        training_accuracy.append(get_accuracy(pred_ct, y_train))
 
-        pred = sigmoid(regression(X_val, w, b))
-        pred_c = (pred > 0.5).astype(int)
+        pred_v = sigmoid(regression(X_val, w, b))
+        pred_cv = (pred_v > 0.5).astype(int)
 
-        val_accuracy = get_accuracy(pred_c, y_val)
+        curr_val_accuracy = get_accuracy(pred_cv, y_val)
         
         if i == 1:
             model["best_w"] = w
             model["best_b"] = b
-        elif i > 1 and val_accuracy > validation_accuracy[-1]:
+        elif i > 1 and curr_val_accuracy > validation_accuracy[-1]:
             model["best_w"] = w
             model["best_b"] = b
         
-        validation_accuracy.append(val_accuracy)
+        validation_accuracy.append(curr_val_accuracy)
 
-    plot(training_accuracy)
-    plot(validation_accuracy)
+    plot(training_accuracy, validation_accuracy)
 
-    pickle.dump((training_accuracy, validation_accuracy), open("../serialized/plot.pkl", "wb"))
+    pickle.dump((training_accuracy, validation_accuracy), open("../serialized/plot3.pkl", "wb"))
     return model
 
 def test_model(X_test, y_test):
     """
     Test the final model's accuracy. Model was selected based on the highest accuracy on the vaidation set. 
     """
-    model = pickle.load(open("../serialized/log_model2.pkl", "rb"))
+    model = pickle.load(open("../serialized/log_model3.pkl", "rb"))
     y_expected = sigmoid(regression(X_test, model["best_w"], model["best_b"]))
 
     pred_c = (y_expected > 0.5).astype(int)
@@ -121,11 +130,13 @@ def test_model(X_test, y_test):
 
     print(accuracy)
 
-def plot(data):
+def plot(data1, data2):
     """
     Plot a graph.
     """
 
-    plt.plot(data)
-    plt.ylabel("some numbers")
+    plt.plot(data1, 'b-', label="training")
+    plt.plot(data2, 'g-', label="validation")
+    plt.ylabel("accuracy")
+    plt.legend()
     plt.show()
