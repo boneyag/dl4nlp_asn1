@@ -15,9 +15,9 @@ def main():
     
 
     X_train, y_train, X_val, y_val, X_test, y_test = pickle.load(open("../serialized/data3.pkl", "rb"))
-    model = training(X_train, y_train, X_val, y_val)
+    # model = training(X_train, y_train, X_val, y_val)
 
-    pickle.dump(model, open("../serialized/log_model3.pkl", "wb"))
+    # pickle.dump(model, open("../serialized/log_model3.pkl", "wb"))
 
     # [tr_ac, vl_ac] = pickle.load(open("../serialized/plot3.pkl", "rb"))
     # plot(tr_ac, vl_ac)
