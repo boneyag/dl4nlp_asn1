@@ -56,7 +56,7 @@ def prepare_vocabulary():
 
     # print(list(word2id.items())[:10])
     # print(list(id2word.items())[:10])
-    pickle.dump(vocab, open("../serialized/vocab3.pkl", "wb"))
+    pickle.dump(vocab, open("../serialized/vocab4.pkl", "wb"))
 
     
 def preprocess_comment(comment):
@@ -96,7 +96,7 @@ def prepare_data():
     Read training and testing data dirs. Vectorize sentences based on the vocabulary.
     """
 
-    vocab = pickle.load(open("../serialized/vocab3.pkl", "rb"))
+    vocab = pickle.load(open("../serialized/vocab4.pkl", "rb"))
 
     # print(vocab["word2id"]["like"])
     # print(vocab["id2word"]["like"])
@@ -189,12 +189,12 @@ def prepare_data():
     y_val.reshape(1,5000)
 
     np.random.seed(314)
-    np.random.shuffle(X_train)
+    np.random.shuffle(X_train.T)
     np.random.seed(314)
     np.random.shuffle(y_train)
 
     # print(X_val.shape)
     # print(X_train.shape)
 
-    pickle.dump((X_train, y_train, X_val, y_val, X_test, y_test), open("../serialized/data3.pkl", "wb"))
+    pickle.dump((X_train, y_train, X_val, y_val, X_test, y_test), open("../serialized/data4.pkl", "wb"))
 
